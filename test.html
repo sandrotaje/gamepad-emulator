@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gamepad Emulator Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    #gamepad-info {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f0f0f0;
+      border-radius: 5px;
+    }
+    .button {
+      display: inline-block;
+      width: 100px;
+      height: 40px;
+      margin: 5px;
+      background-color: #ddd;
+      border: 1px solid #999;
+      border-radius: 5px;
+      text-align: center;
+      line-height: 40px;
+      cursor: pointer;
+    }
+    .button.pressed {
+      background-color: #007bff;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gamepad Emulator Test</h1>
+  <p>Activate the Virtual Gamepad Emulator extension and press keys to test:</p>
+  <ul>
+    <li>Arrow keys for D-pad</li>
+    <li>Z, X, A, S for face buttons</li>
+    <li>Q, E for bumpers</li>
+    <li>Enter for Start</li>
+    <li>Shift for Back/Select</li>
+  </ul>
+  
+  <div id="gamepad-info">
+    <h2>Gamepad Status</h2>
+    <p id="status">No gamepad detected</p>
+    <div id="buttons"></div>
+  </div>
+  
+  <script>
+    // Create button elements for visualization
+    const buttonsContainer = document.getElementById('buttons');
+    const buttonNames = [
+      'A', 'B', 'X', 'Y', 'LB', 'RB', 'LT', 'RT',
+      'Back', 'Start', 'LS', 'RS', 'Up', 'Down', 'Left', 'Right', 'Home'
+    ];
+    
+    buttonNames.forEach((name, index) => {
+      const button = document.createElement('div');
+      button.className = 'button';
+      button.id = `btn-${index}`;
+      button.textContent = `${name} (${index})`;
+      buttonsContainer.appendChild(button);
+    });
+    
+    // Create axis elements for visualization
+    const axesContainer = document.createElement('div');
+    axesContainer.innerHTML = '<h3>Axes</h3>';
+    document.getElementById('gamepad-info').appendChild(axesContainer);
+    
+    const axisNames = ['Left Stick X', 'Left Stick Y', 'Right Stick X', 'Right Stick Y', 'Left Trigger', 'Right Trigger'];
+    axisNames.forEach((name, index) => {
+      const axis = document.createElement('div');
+      axis.id = `axis-${index}`;
+      axis.textContent = `${name}: 0.00`;
+      axesContainer.appendChild(axis);
+    });
+    
+    // Update gamepad status
+    function updateGamepadStatus() {
+      const gamepads = navigator.getGamepads();
+      const gamepad = gamepads[0];
+      
+      if (gamepad) {
+        document.getElementById('status').textContent = 
+          `Gamepad connected: ${gamepad.id}`;
+        
+        // Update button states
+        gamepad.buttons.forEach((button, index) => {
+          const btnElement = document.getElementById(`btn-${index}`);
+          if (btnElement) {
+            if (button.pressed) {
+              btnElement.classList.add('pressed');
+            } else {
+              btnElement.classList.remove('pressed');
+            }
+          }
+        });
+        
+        // Update axis states
+        gamepad.axes.forEach((value, index) => {
+          const axisElement = document.getElementById(`axis-${index}`);
+          if (axisElement) {
+            axisElement.textContent = `${axisNames[index]}: ${value.toFixed(2)}`;
+          }
+        });
+      } else {
+        document.getElementById('status').textContent = 'No gamepad detected';
+      }
+      
+      requestAnimationFrame(updateGamepadStatus);
+    }
+    
+    // Start updating gamepad status
+    updateGamepadStatus();
+  </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Virtual Gamepad Emulator",
+  "version": "1.0",
+  "description": "Emulate a gamepad using keyboard inputs for browser-based gaming like Xbox Remote Play.",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Virtual Gamepad Emulator"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["gamepad-simulator.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
