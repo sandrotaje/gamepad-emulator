@@ -19,10 +19,10 @@
     'KeyV': { type: 'button', index: 3 },        // Y button
     'KeyQ': { type: 'button', index: 4 },        // Left bumper
     'KeyE': { type: 'button', index: 5 },        // Right bumper
-    'Digit1': { type: 'axis', index: 4, value: 1 }, // Left trigger
+    'KeyU': { type: 'axis', index: 4, value: 1 }, // Left trigger
     'Digit2': { type: 'button', index: 9 },      // Start button
     'Digit3': { type: 'button', index: 8 },      // Back/Select button
-    'Digit4': { type: 'axis', index: 5, value: 1 }, // Right trigger
+    'KeyO': { type: 'axis', index: 5, value: 1 }, // Right trigger
     'Space': { type: 'button', index: 16 },      // Home button
     // Left stick axes
     'KeyW': { type: 'axis', index: 1, value: -1 }, // Left stick up
@@ -105,6 +105,37 @@
         }
       }
     }
+  });
+  
+  // Handle mouse movement events for right stick control
+  window.addEventListener('gamepadMouseMovement', function(event) {
+    if (!gamepadConnected || !virtualGamepad) return;
+    
+    const { deltaX, deltaY } = event.detail;
+    
+    // Convert mouse movement to right stick axes values
+    // Scale factor to adjust sensitivity (can be customized)
+    const sensitivity = 0.01;
+    
+    // Calculate new axis values
+    let newX = deltaX * sensitivity;
+    let newY = deltaY * sensitivity;
+    
+    // Apply smoothing by combining with current values
+    newX = virtualGamepad.axes[2] + (newX * 0.3);
+    newY = virtualGamepad.axes[3] + (newY * 0.3);
+    
+    // Clamp values to [-1, 1] range
+    newX = Math.max(-1, Math.min(1, newX));
+    newY = Math.max(-1, Math.min(1, newY));
+    
+    // Apply decay to gradually return to center when not moving
+    newX *= 0.9;
+    newY *= 0.9;
+    
+    // Update right stick axes (indices 2 and 3)
+    virtualGamepad.axes[2] = newX; // Right stick X
+    virtualGamepad.axes[3] = newY; // Right stick Y
   });
   
   // Handle disconnect event from the content script

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gamepad Emulator Mouse Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align: center;
+    }
+    #test-area {
+      width: 500px;
+      height: 300px;
+      border: 2px dashed #007bff;
+      margin: 20px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #666;
+      user-select: none;
+      cursor: crosshair;
+    }
+    #instructions {
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-radius: 5px;
+      text-align: left;
+    }
+    #gamepad-info {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f0f0f0;
+      border-radius: 5px;
+      text-align: left;
+    }
+    .highlight {
+      background-color: #fff3cd;
+      border: 1px solid #ffeaa7;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 15px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gamepad Emulator Mouse Test</h1>
+  
+  <div class="highlight">
+    <strong>Important:</strong> Make sure the Virtual Gamepad Emulator extension is activated before testing!
+  </div>
+  
+  <div id="instructions">
+    <h3>Testing Mouse-to-Right-Stick Mapping</h3>
+    <ol>
+      <li>Activate the Virtual Gamepad Emulator extension</li>
+      <li>Simply move your mouse within the browser window to control the right stick</li>
+      <li>Stop moving the mouse to see the right stick gradually return to center</li>
+    </ol>
+    <p><strong>Tip:</strong> The right stick axes are indices 2 (X) and 3 (Y) in the gamepad API.</p>
+  </div>
+  
+  <div id="test-area">
+    Move your mouse anywhere in the browser window to test mouse-to-right-stick mapping
+  </div>
+  
+  <div id="gamepad-info">
+    <h3>Gamepad Status</h3>
+    <p id="status">No gamepad detected</p>
+    <div id="axes-info"></div>
+  </div>
+
+  <script>
+    // Update gamepad status display
+    function updateGamepadStatus() {
+      const gamepads = navigator.getGamepads();
+      const gamepad = gamepads[0];
+      
+      if (gamepad) {
+        document.getElementById('status').textContent = 
+          `Gamepad connected: ${gamepad.id}`;
+        
+        // Display axis information
+        const axesInfo = document.getElementById('axes-info');
+        axesInfo.innerHTML = '<h4>Axes Values:</h4>';
+        
+        const axisNames = ['Left Stick X', 'Left Stick Y', 'Right Stick X', 'Right Stick Y', 'Left Trigger', 'Right Trigger'];
+        gamepad.axes.forEach((value, index) => {
+          const p = document.createElement('p');
+          // Highlight right stick axes (indices 2 and 3)
+          const isRightStick = (index === 2 || index === 3);
+          p.innerHTML = `<strong>${axisNames[index]}:</strong> ${value.toFixed(3)} ${isRightStick ? '<span style="color: #007bff;">(Right Stick)</span>' : ''}`;
+          axesInfo.appendChild(p);
+        });
+      } else {
+        document.getElementById('status').textContent = 'No gamepad detected';
+        document.getElementById('axes-info').innerHTML = '<p>Please activate the Virtual Gamepad Emulator extension.</p>';
+      }
+      
+      requestAnimationFrame(updateGamepadStatus);
+    }
+    
+    // Start updating gamepad status
+    updateGamepadStatus();
+  </script>
+</body>
+</html>

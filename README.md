@@ -35,6 +35,14 @@ A Chrome extension that emulates a gamepad using keyboard inputs. This extension
 | W/A/S/D     | Left Stick     |
 | I/J/K/L     | Right Stick    |
 
+## Mouse Control
+
+| Mouse Action | Gamepad Function |
+|-------------|----------------|
+| Mouse Movement | Right Stick Movement |
+
+The mouse-to-right-stick mapping allows you to control the right stick by simply moving the mouse. The right stick will automatically return to center when the mouse stops moving, with a smooth decay effect.
+
 ## How It Works
 
 The extension works by injecting a script into web pages that overrides the `navigator.getGamepads()` function to return a virtual gamepad. When you press keys on your keyboard, the extension maps those key presses to gamepad button presses.
@@ -43,8 +51,17 @@ The extension works by injecting a script into web pages that overrides the `nav
 
 1. Click the extension icon in the Chrome toolbar
 2. Click "Activate Gamepad" to enable the virtual gamepad
-3. Use your keyboard to control the gamepad
+3. Use your keyboard or mouse to control the gamepad
 4. Click "Deactivate Gamepad" when you're done
+
+## Testing Mouse Control
+
+To test the new mouse-to-right-stick feature:
+
+1. Open `mouse-test.html` in your browser
+2. Activate the extension
+3. Click and drag in the test area to control the right stick
+4. See `TESTING_MOUSE.md` for detailed instructions
 
 ## Compatibility
 
@@ -61,5 +78,4 @@ To customize the key mappings, modify the `keyMappings` object in `gamepad-simul
 
 ## Limitations
 
-- Currently only supports button presses (no analog stick support yet)
 - Only simulates one gamepad at a time

@@ -27,6 +27,14 @@ function activateGamepad() {
   document.addEventListener('keydown', handleKeyDown);
   document.addEventListener('keyup', handleKeyUp);
   
+  // Set up mouse event listeners for right stick control
+  document.addEventListener('mousemove', handleMouseMove);
+  
+  // Initialize mouse tracking variables
+  window.gamepadMouseActive = true;
+  window.gamepadMouseLastX = 0;
+  window.gamepadMouseLastY = 0;
+  
   window.gamepadActive = true;
 }
 
@@ -35,6 +43,9 @@ function deactivateGamepad() {
   // Remove keyboard event listeners
   document.removeEventListener('keydown', handleKeyDown);
   document.removeEventListener('keyup', handleKeyUp);
+  
+  // Remove mouse event listeners
+  document.removeEventListener('mousemove', handleMouseMove);
   
   // Send disconnect message to the gamepad simulator
   window.dispatchEvent(new CustomEvent('gamepadDisconnect'));
@@ -63,6 +74,23 @@ function handleKeyUp(event) {
     detail: {
       key: event.code,
       pressed: false
+    }
+  }));
+}
+
+// Handle mouse movement for right stick control
+function handleMouseMove(event) {
+  if (!window.gamepadActive) return;
+  
+  // Calculate relative movement
+  const deltaX = event.movementX || 0;
+  const deltaY = event.movementY || 0;
+  
+  // Send mouse movement to the gamepad simulator
+  window.dispatchEvent(new CustomEvent('gamepadMouseMovement', {
+    detail: {
+      deltaX: deltaX,
+      deltaY: deltaY
     }
   }));
 }
